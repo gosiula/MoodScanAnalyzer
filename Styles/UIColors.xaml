@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--Background colors-->
+    <GradientStopCollection  x:Key="BackgroundStops">
+        <GradientStop Color="#010813" Offset="0"/>
+        <GradientStop Color="#021127" Offset="1"/>
+    </GradientStopCollection>
+
+    <!--Border colors-->
+    <GradientStopCollection  x:Key="BorderStops">
+        <GradientStop Color="#672EC5" Offset="0"/>
+        <GradientStop Color="#0BADD5" Offset="0.5"/>
+        <GradientStop Color="#02F296" Offset="1"/>
+    </GradientStopCollection>
+
+    <LinearGradientBrush x:Key="BorderBrushGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#672EC5" Offset="0"/>
+        <GradientStop Color="#0BADD5" Offset="0.5"/>
+        <GradientStop Color="#02F296" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!--Color palette-->
+    <SolidColorBrush x:Key="color1">#02F296</SolidColorBrush>
+    <SolidColorBrush x:Key="color2">#0CD5BB</SolidColorBrush>
+    <SolidColorBrush x:Key="color3">#0BADD5</SolidColorBrush>
+    <SolidColorBrush x:Key="color4">#396ECD</SolidColorBrush>
+    <SolidColorBrush x:Key="color5">#672EC5</SolidColorBrush>
+    <SolidColorBrush x:Key="color6">#5727A5</SolidColorBrush>
+    <SolidColorBrush x:Key="color7">#FF1FA9</SolidColorBrush>
+    <SolidColorBrush x:Key="color8">#021127</SolidColorBrush>
+    <SolidColorBrush x:Key="color9">#010813</SolidColorBrush>
+    <SolidColorBrush x:Key="color10">#102951</SolidColorBrush>
+    <SolidColorBrush x:Key="color11">#FF6DC7</SolidColorBrush>
+
+    <!--Font colors-->
+    <SolidColorBrush x:Key="fontColor1">White</SolidColorBrush>
+    <SolidColorBrush x:Key="fontColor2">DarkGray</SolidColorBrush>
+</ResourceDictionary>

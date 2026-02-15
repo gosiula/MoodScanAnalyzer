@@ -1,0 +1,282 @@
+﻿<UserControl x:Class="MoodScanAnalyzer.View.VideoChartView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:MoodScanAnalyzer.View"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:oxy="http://oxyplot.org/wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" 
+              Margin="20">
+            <Border BorderThickness="0.5"
+                    CornerRadius="12"
+                    Background="{StaticResource color8}"
+                    Padding="2">
+                <Border.BorderBrush>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#672EC5" Offset="0"/>
+                        <GradientStop Color="#0BADD5" Offset="0.5"/>
+                        <GradientStop Color="#02F296" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.BorderBrush>
+                <Border.Effect>
+                    <DropShadowEffect Color="#672EC5" 
+                                      BlurRadius="15" 
+                                      ShadowDepth="0" 
+                                      Opacity="0.4"/>
+                </Border.Effect>
+
+                <Border CornerRadius="10" 
+                        Background="{StaticResource color8}"
+                        ClipToBounds="True">
+                    <oxy:PlotView Model="{Binding EmotionPlotModel}" 
+                                  x:Name="EmotionPlotView" 
+                                  MinHeight="500" 
+                                  VerticalAlignment="Stretch" 
+                                  HorizontalAlignment="Stretch" 
+                                  DefaultTrackerTemplate="{x:Null}"
+                                  Background="Transparent"/>
+                </Border>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Column="1" 
+              Margin="10,20,20,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" 
+                  HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Top" 
+                            Margin="0,0,0,3">
+                    <TextBlock Text="Wybrani użytkownicy:" 
+                               Foreground="{StaticResource fontColor2}" 
+                               FontSize="12" 
+                               Margin="5,0,0,5"/>
+                    <ToggleButton x:Name="UserToggle" 
+                                  Style="{StaticResource MultiSelectToggleButton}"
+                                  Cursor="Hand" 
+                                  Content="Wybierz" 
+                                  Width="150" 
+                                  Margin="0,0,0,0"/>
+                    <Popup IsOpen="{Binding IsChecked, ElementName=UserToggle}" 
+                           PlacementTarget="{Binding ElementName=UserToggle}" 
+                           StaysOpen="False"
+                           AllowsTransparency="True"
+                           PopupAnimation="Slide">
+                        <Border Background="{StaticResource color8}"
+                                BorderBrush="{StaticResource BorderBrushGradient}" 
+                                BorderThickness="1.5"
+                                CornerRadius="8"
+                                Margin="0,5,0,0"
+                                MinWidth="150">
+                            <ScrollViewer MaxHeight="200" 
+                                          VerticalScrollBarVisibility="Auto">
+                                <ItemsControl ItemsSource="{Binding Users}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <CheckBox Content="{Binding Name}" 
+                                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                      Style="{StaticResource MultiSelectCheckBox}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+
+            </Grid>
+
+            <Border CornerRadius="10" 
+                    BorderBrush="{StaticResource BorderBrushGradient}" 
+                    BorderThickness="0.5"
+                    Margin="0,10,0,0"
+                    Background="{StaticResource color8}"
+                    Grid.Row="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#672EC5" 
+                                      BlurRadius="15" 
+                                      ShadowDepth="0" 
+                                      Opacity="0.4"/>
+                </Border.Effect>
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="145"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Grid.Row="0" 
+                                    Margin="0,0,0,0" 
+                                    HorizontalAlignment="Center">
+                            <Grid>
+                                <MediaElement x:Name="VideoPlayer"
+                                              Grid.Column="0"
+                                              Source="{Binding VideoSource}"
+                                              LoadedBehavior="Manual"
+                                              UnloadedBehavior="Manual"
+                                              MediaOpened="VideoPlayer_MediaOpened"
+                                              MediaEnded="VideoPlayer_MediaEnded"
+                                              Height="160"
+                                              Width="250"
+                                              Stretch="Uniform" 
+                                              Margin="0,0,0,0"/>
+                            </Grid>
+
+                            <Button Cursor="Hand"
+                                    Width="40"
+                                    Height="25"
+                                    Background="{StaticResource color8}"
+                                    Command="{Binding TogglePlayPauseCommand}">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                CornerRadius="5" 
+                                                BorderThickness="0">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"
+                                                              Content="{TemplateBinding Content}"
+                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                              DataContext="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=DataContext}"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+
+                                <fa:ImageAwesome Icon="{Binding IsPlaying, Converter={StaticResource PlayPauseConverter}}"
+                                                 Height="15"
+                                                 Foreground="{StaticResource fontColor1}"/>
+                            </Button>
+
+                        </StackPanel>
+
+                        <Border Grid.Row="1" 
+                                Padding="20" 
+                                CornerRadius="10" 
+                                Margin="0,10,0,15" 
+                                Background="#33102951">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" 
+                                           FontSize="12" 
+                                           Foreground="{StaticResource color11}" 
+                                           Margin="0,0,0,0">
+                                <Run Text="Średni procent spełniania"/>
+                                <LineBreak/>
+                                <Run Text="wybranych segmentów:"/>
+                                <LineBreak/>
+                                </TextBlock>
+                                <TextBlock x:Name="SegmentAccuracyTextBlock" 
+                                           Grid.Row="1" 
+                                           FontSize="16"  
+                                           Margin="0,0,0,0" 
+                                           TextWrapping="Wrap"/>
+
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                </StackPanel>
+
+            </Border>
+
+            <StackPanel Grid.Row="2">
+                <Border Background="{StaticResource color8}" 
+                        BorderBrush="{StaticResource BorderBrushGradient}" 
+                        BorderThickness="0.5" 
+                        Padding="15" 
+                        Margin="0,14,0,0" 
+                        CornerRadius="8,8,0,0">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#672EC5" 
+                                          BlurRadius="15" 
+                                          ShadowDepth="0" 
+                                          Opacity="0.4"/>
+                    </Border.Effect>
+                    <StackPanel Orientation="Horizontal">
+                        <fa:ImageAwesome Icon="BarChart" 
+                                         Foreground="{StaticResource color4}" 
+                                         Width="16" 
+                                         Height="16"
+                                         VerticalAlignment="Center"
+                                         Margin="0,0,8,0"/>
+                        <TextBlock Text="WYNIKI ANALIZY" 
+                                   FontSize="12" 
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource color4}" 
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="{StaticResource color8}" 
+                        BorderBrush="{StaticResource BorderBrushGradient}" 
+                        BorderThickness="0.5,0,0.5,0.5" 
+                        Padding="10" 
+                        Margin="0,0,0,20" 
+                        CornerRadius="0,0,8,8">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#672EC5" 
+                                          BlurRadius="15" 
+                                          ShadowDepth="0" 
+                                          Opacity="0.4"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+                        <Grid Margin="0,5,0,10">
+                            <Border Grid.Column="0" 
+                                    Grid.Row="0"
+                                    Padding="30,10,0,3" 
+                                    Background="#33102951"
+                                    Margin="0,0,50,0" 
+                                    CornerRadius="6">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Grid.Row="0" 
+                                                Orientation="Horizontal">
+                                        <TextBlock Text="Średni procent poprawności emocji: " 
+                                                   FontSize="12" 
+                                                   FontWeight="Light"
+                                                   Foreground="{StaticResource fontColor2}" 
+                                                   Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding SelectedVideo.EmotionAnalyze}" 
+                                                   FontSize="14"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource color4}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>
